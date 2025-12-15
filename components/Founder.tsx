@@ -1,9 +1,30 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Award, BookOpen, GraduationCap } from 'lucide-react';
 
 const Founder: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="founder" className="py-24 bg-brand-light relative overflow-hidden">
+    <section ref={sectionRef} id="founder" className="py-24 bg-brand-light relative overflow-hidden">
       {/* Background Decorative Element */}
       <div className="absolute -left-20 top-20 w-64 h-64 bg-brand-yellow/10 rounded-full blur-3xl"></div>
 
@@ -11,7 +32,11 @@ const Founder: React.FC = () => {
         <div className="flex flex-col lg:flex-row items-center gap-16">
           
           {/* Image Area */}
-          <div className="w-full lg:w-1/3">
+          <div 
+            className={`w-full lg:w-1/3 transition-all duration-1000 ease-out delay-200 transform ${
+              isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-12'
+            }`}
+          >
             <div className="relative">
               <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl bg-brand-navy/5">
                 {/* Placeholder for Canan Çakar Illustration */}
@@ -29,7 +54,11 @@ const Founder: React.FC = () => {
           </div>
 
           {/* Content Area */}
-          <div className="w-full lg:w-2/3 space-y-8">
+          <div 
+            className={`w-full lg:w-2/3 space-y-8 transition-all duration-1000 ease-out delay-100 transform ${
+              isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12'
+            }`}
+          >
             <div>
               <h2 className="text-sm font-bold tracking-widest text-brand-blue uppercase mb-3">Leadership</h2>
               <h3 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-6">Vision & Experience</h3>

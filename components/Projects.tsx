@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ProjectItem } from '../types';
 
 const projects: ProjectItem[] = [
@@ -23,10 +23,35 @@ const projects: ProjectItem[] = [
 ];
 
 const Projects: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="projects" className="py-24 bg-white">
+    <section ref={sectionRef} id="projects" className="py-24 bg-white">
       <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-16">
+        <div 
+          className={`flex flex-col md:flex-row justify-between items-end mb-16 transition-all duration-1000 ease-out transform ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
+        >
           <div>
             <h2 className="text-sm font-bold tracking-widest text-brand-blue uppercase mb-3">Our Portfolio</h2>
             <h3 className="text-3xl md:text-4xl font-serif font-bold text-brand-navy">Key Projects</h3>
@@ -37,8 +62,14 @@ const Projects: React.FC = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          {projects.map((project) => (
-            <div key={project.id} className="group relative overflow-hidden rounded-lg cursor-default shadow-md hover:shadow-xl transition-all">
+          {projects.map((project, index) => (
+            <div 
+              key={project.id} 
+              className={`group relative overflow-hidden rounded-lg cursor-default shadow-md hover:shadow-xl transition-all duration-700 transform ${
+                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+              }`}
+              style={{ transitionDelay: `${index * 200}ms` }}
+            >
               <div className="aspect-[4/3] bg-gray-100 overflow-hidden relative">
                 {/* Decorative Pattern Overlay */}
                 <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_1px_1px,#0a192f_1px,transparent_0)] bg-[size:20px_20px]"></div>

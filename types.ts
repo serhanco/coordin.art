@@ -1,11 +1,11 @@
-import { LucideIcon } from 'lucide-react';
+import { ComponentType, SVGProps } from 'react';
 
 export interface ServiceItem {
   id: string;
   title: string;
   subtitle: string;
   description: string;
-  icon: LucideIcon;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
 }
 
 export interface StatItem {
